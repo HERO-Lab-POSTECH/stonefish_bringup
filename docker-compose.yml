@@ -1,0 +1,19 @@
+services:
+  stonefish:
+    image: ghcr.io/hero-lab-postech/stonefish_bringup:latest
+    build:
+      context: .
+      target: runtime
+    runtime: nvidia
+    network_mode: host
+    environment:
+      NVIDIA_VISIBLE_DEVICES: "all"
+      DISPLAY: ":20"
+      VGL_DISPLAY: ":0"
+      NVIDIA_DRIVER_CAPABILITIES: "graphics,display,utility"
+      QT_X11_NO_MITSHM: "1"
+      SDL_VIDEODRIVER: "x11"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    stdin_open: true
+    tty: true
