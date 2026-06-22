@@ -53,6 +53,8 @@ FROM ros:humble-ros-base AS runtime
 # 런타임 의존성 (빌드 도구 없음 = 슬림). slam이 octomap 링크 → liboctomap 런타임 필요.
 RUN apt-get update && apt-get install -y --no-install-recommends \
       libsdl2-2.0-0 libfreetype6 libglm-dev libgomp1 liboctomap1.9 \
+      ros-humble-image-transport ros-humble-cv-bridge \
+      ros-humble-octomap-msgs ros-humble-pcl-conversions ros-humble-pcl-msgs \
       mesa-utils wget \
  && rm -rf /var/lib/apt/lists/*
 
