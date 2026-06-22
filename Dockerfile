@@ -23,3 +23,26 @@ WORKDIR /ws/src/stonefish/build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX=/opt/stonefish -DCMAKE_BUILD_TYPE=Release \
  && make -j"$(nproc)" \
  && make install
+
+# rosdep가 못 잡는 slam 빌드 의존성 명시 설치 (slam CMakeLists find_package, package.xml 미선언)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      liboctomap-dev pybind11-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# rosdep: sim/slam의 package.xml 의존성 설치
+# --skip-keys: stonefish(underlay), ament_python(rosdep DB 미등록), pcl(rosdep DB 미등록)
+WORKDIR /ws
+RUN apt-get update \
+ && rosdep update \
+ && rosdep install --from-paths src --ignore-src -y \
+      --skip-keys "stonefish ament_python pcl" \
+ && rm -rf /var/lib/apt/lists/*
+
+# overlay: sim/slam colcon 빌드 (stonefish underlay를 CMAKE_PREFIX_PATH로)
+# stonefish_description/launch 디렉토리가 소스에 없어 cmake install 실패 → 빈 dir 생성
+RUN mkdir -p src/stonefish_sim/stonefish_description/launch \
+ && . /opt/ros/humble/setup.sh \
+ && export CMAKE_PREFIX_PATH=/opt/stonefish:$CMAKE_PREFIX_PATH \
+ && colcon build --merge-install \
+      --cmake-args -DCMAKE_BUILD_TYPE=Release \
+ && rm -rf build log
