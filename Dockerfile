@@ -69,5 +69,6 @@ COPY --from=builder /ws/install /ws/install
 ENV LD_LIBRARY_PATH=/opt/stonefish/lib:${LD_LIBRARY_PATH}
 
 # entrypoint는 Task 5에서 활성화:
-# COPY entrypoint.sh /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

@@ -4,3 +4,4 @@ install/
 log/
 *.lock.repos
 .env
+.superpowers/
