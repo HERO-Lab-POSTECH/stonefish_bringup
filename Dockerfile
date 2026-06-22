@@ -46,3 +46,28 @@ RUN mkdir -p src/stonefish_sim/stonefish_description/launch \
  && colcon build --merge-install \
       --cmake-args -DCMAKE_BUILD_TYPE=Release \
  && rm -rf build log
+
+# ── stage: runtime ──────────────────────────────────────────
+FROM ros:humble-ros-base AS runtime
+
+# 런타임 의존성 (빌드 도구 없음 = 슬림). slam이 octomap 링크 → liboctomap 런타임 필요.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libsdl2-2.0-0 libfreetype6 libglm-dev libgomp1 liboctomap1.9 \
+      mesa-utils wget \
+ && rm -rf /var/lib/apt/lists/*
+
+# VirtualGL — ubuntu 저장소에 없음(GitHub .deb 전용). 버전 고정 .deb 설치.
+ARG VGL_VERSION=3.1.4
+RUN wget -q "https://github.com/VirtualGL/virtualgl/releases/download/${VGL_VERSION}/virtualgl_${VGL_VERSION}_amd64.deb" -O /tmp/vgl.deb \
+ && apt-get update && apt-get install -y --no-install-recommends /tmp/vgl.deb \
+ && rm -f /tmp/vgl.deb && rm -rf /var/lib/apt/lists/*
+
+# underlay + overlay 산출물만 COPY
+COPY --from=builder /opt/stonefish /opt/stonefish
+COPY --from=builder /ws/install /ws/install
+
+ENV LD_LIBRARY_PATH=/opt/stonefish/lib:${LD_LIBRARY_PATH}
+
+# entrypoint는 Task 5에서 활성화:
+# COPY entrypoint.sh /entrypoint.sh
+# ENTRYPOINT ["/entrypoint.sh"]
