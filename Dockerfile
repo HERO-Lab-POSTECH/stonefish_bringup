@@ -55,14 +55,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libsdl2-2.0-0 libfreetype6 libglm-dev libgomp1 liboctomap1.9 \
       ros-humble-image-transport ros-humble-cv-bridge \
       ros-humble-octomap-msgs ros-humble-pcl-conversions ros-humble-pcl-msgs \
-      mesa-utils wget \
+      mesa-utils \
  && rm -rf /var/lib/apt/lists/*
-
-# VirtualGL — ubuntu 저장소에 없음(GitHub .deb 전용). 버전 고정 .deb 설치.
-ARG VGL_VERSION=3.1.4
-RUN wget -q "https://github.com/VirtualGL/virtualgl/releases/download/${VGL_VERSION}/virtualgl_${VGL_VERSION}_amd64.deb" -O /tmp/vgl.deb \
- && apt-get update && apt-get install -y --no-install-recommends /tmp/vgl.deb \
- && rm -f /tmp/vgl.deb && rm -rf /var/lib/apt/lists/*
 
 # underlay + overlay 산출물만 COPY
 COPY --from=builder /opt/stonefish /opt/stonefish

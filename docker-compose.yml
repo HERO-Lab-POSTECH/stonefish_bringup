@@ -8,8 +8,8 @@ services:
     network_mode: host
     environment:
       NVIDIA_VISIBLE_DEVICES: "all"
-      DISPLAY: ":20"
-      VGL_DISPLAY: ":0"
+      # stonefish를 호스트 X 디스플레이(:0)에 직접 렌더. 호스트에서 `xhost +local:` 필요.
+      DISPLAY: ":0"
       NVIDIA_DRIVER_CAPABILITIES: "graphics,display,utility"
       QT_X11_NO_MITSHM: "1"
       SDL_VIDEODRIVER: "x11"
