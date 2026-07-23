@@ -21,7 +21,7 @@ DISPLAY=:0 xhost +local:
 
 # 시뮬레이터를 호스트 :0(GPU)에 직접 렌더
 docker compose run --rm stonefish bash -c \
-  '. /ws/install/setup.bash && ros2 launch stonefish_ros2 simulator_gpu.launch.py \
+  '. /ws/install/setup.bash && ros2 launch stonefish_ros2 simulator.launch.py \
    simulation_data:=/ws/install/share/stonefish_description \
    scenario_desc:=/ws/install/share/stonefish_description/scenarios/bluerov2_empty.scn'
 ```
