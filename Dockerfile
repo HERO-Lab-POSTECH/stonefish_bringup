@@ -55,6 +55,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libsdl2-2.0-0 libfreetype6 libglm-dev libgomp1 liboctomap1.9 \
       ros-humble-image-transport ros-humble-cv-bridge \
       ros-humble-octomap-msgs ros-humble-pcl-conversions ros-humble-pcl-msgs \
+      ros-humble-vision-msgs \
       mesa-utils \
  && rm -rf /var/lib/apt/lists/*
 
