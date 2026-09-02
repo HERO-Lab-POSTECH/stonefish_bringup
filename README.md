@@ -13,7 +13,9 @@ ROS2 Humble, GPU 가속)의 배포용 Docker 환경.
 git clone https://github.com/HERO-Lab-POSTECH/stonefish_bringup.git
 cd stonefish_bringup
 
-# 이미지 빌드 (최초 1회, ~15-30분)
+# 이미지 빌드 (최초 1회, ~20-40분)
+# 검출 노드용 ultralytics 가 CUDA 빌드 torch/torchvision 을 끌고 와 이미지가
+# 수 GB 커진다 — GPU 를 안 쓸 이미지면 Dockerfile 의 해당 RUN 주석 참조.
 docker compose build
 
 # 호스트에서 X 디스플레이(:0) 캡처 권한 부여 (1회)
