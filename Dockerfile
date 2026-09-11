@@ -55,7 +55,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libsdl2-2.0-0 libfreetype6 libglm-dev libgomp1 liboctomap1.9 \
       ros-humble-image-transport ros-humble-cv-bridge \
       ros-humble-octomap-msgs ros-humble-pcl-conversions ros-humble-pcl-msgs \
+      ros-humble-vision-msgs \
       mesa-utils \
+ && rm -rf /var/lib/apt/lists/*
+
+# 검출 노드(`stonefish_sonar_yolo`)의 pip 전용 런타임 의존성.
+# rosdep 키가 없어 `package.xml` 로는 못 잡는다 — 그 파일 주석도 그렇게 적고 있다.
+#
+# ⚠️ 이미지가 크게 는다: 리눅스 x86 기본 휠은 CUDA 빌드라 torch·torchvision 과
+#    번들 nvidia 라이브러리까지 따라와 수 GB가 붙는다. compose 가 `runtime: nvidia`
+#    로 GPU 를 붙이고 노드 기본값도 `device: cuda:0` 이라 CUDA 빌드로 맞춘다.
+#    GPU 없이 돌릴 이미지가 필요하면 `--index-url https://download.pytorch.org/whl/cpu`
+#    를 붙이고 노드에 `-p device:=cpu` 를 주면 된다(수 GB 절약).
+#
+# 버전 고정: 8.4.138 로 torchvision 0.28.0 짝을 확인했다. 올릴 때는 torch↔
+# torchvision 짝이 깨지지 않는지 먼저 본다(ultralytics 는 torch 를 상한 없이
+# 요구하므로 pip 이 조용히 다른 torch 로 갈아탈 수 있다).
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip \
+ && pip3 install --no-cache-dir "ultralytics==8.4.138" \
  && rm -rf /var/lib/apt/lists/*
 
 # underlay + overlay 산출물만 COPY

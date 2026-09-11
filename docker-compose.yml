@@ -10,7 +10,9 @@ services:
       NVIDIA_VISIBLE_DEVICES: "all"
       # stonefish를 호스트 X 디스플레이(:0)에 직접 렌더. 호스트에서 `xhost +local:` 필요.
       DISPLAY: ":0"
-      NVIDIA_DRIVER_CAPABILITIES: "graphics,display,utility"
+      # `compute` 가 없으면 컨테이너 안에서 CUDA 가 안 보인다 — stonefish 렌더는
+      # graphics 로 되지만 YOLO(torch)는 조용히 CPU 로 떨어지거나 죽는다.
+      NVIDIA_DRIVER_CAPABILITIES: "compute,graphics,display,utility"
       QT_X11_NO_MITSHM: "1"
       SDL_VIDEODRIVER: "x11"
     volumes:
